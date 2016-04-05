@@ -40,6 +40,7 @@ eval_exit()
 check_parse_mac() #name value
 {
 	echo ${2} | grep -q "^${MACREGEX}$"
+
 	if [ $? -ne 0 ]
 	then
 		echo "{error}"
@@ -75,6 +76,12 @@ check_parse_prefix() #name value
 	fi
 }
 
+# get original hardware mac address
+get_hw_mac()
+{
+	ORIMAC="$(ethtool -P eth0 | grep -o "${MACREGEX}")"
+}
+
 
 # Parse wired.conf
 parse_config()
@@ -102,13 +109,6 @@ parse_config()
 				echo "Unknown value for ${name}: ${value}"
 				echo 'Expected value: "yes" or "no"'
 				exit 1
-			fi
-			;;
-		"computer-mac")
-			if [ "${MACCHANGE}" == "yes" ]
-			then
-				check_parse_mac "${name}" "${value}"
-				ORIMAC="${value}"
 			fi
 			;;
 		"fake-mac")
@@ -231,6 +231,7 @@ if_down()
 	if [ "${MACCHANGE}" == "yes" ]
 	then
 		echo -n "Resetting MAC address... "
+		get_hw_mac
 		ip link set dev eth0 address "${ORIMAC}"
 		CURRENTMAC="$(ip link show dev eth0 | grep -P -o '(?<=(link/ether )).*(?=( brd ))')"
 		if [ "${CURRENTMAC,,}" == "${ORIMAC,,}" ]

@@ -1,0 +1,86 @@
+===========================
+Ubuntu WLAN Hotspot Package
+by Keysie, 2016
+===========================
+
+General info:
+*************
+
+This package contains a set of scripts that facilitate the process
+of setting up your ubuntu laptop as a wlan router. I will maintain
+it so it keeps working with the version of ubuntu I'm using. Note
+that there is explicitly no support for any other version of linux
+or ubuntu. That said, it is very likely that the scripts will work
+on other versions of ubuntu or even entirely different distros.
+Also, the interfaces used are currently eth0 for wired and wlan0
+for wireless. To change this, you will have to review all the scripts.
+(This might be changed in the future)
+
+-----------------------------
+Current version: 14.04 x86_64
+-----------------------------
+
+Usage:
+******
+
+Make all *.sh files executable and run WLAN.sh as sudo or root.
+Once everything is up and running, the accesspoint's output will
+run verbosely in the terminal. To shut down the AP and reset your
+previous configuration, press CTRL+C. If you abort the process while
+it is starting or stopping, there might be unforseen problems with
+settings that won't be propperly set or reset.
+
+Normally you should not have to do anything, as there are timeouts
+and failsafes implemented to prevent the script from hanging.
+
+Configuration:
+**************
+
+Several things must be configured before use. There are three parts
+in this package:
+
+- Wired connection (inet is comming from here)
+- Wireless hotspot (inet is going to here)
+- Routing (the part that connects the two)
+
+
+Wired:
+
+To configure the wired connection, edit wired.conf. Do not change
+anything on the formatting, the parser might not like it...
+In this file, you can choose if your computer's ethernet MAC-address
+should be changed while the hotspot is up. To disable this feature,
+set change-mac=no.
+Also in this file, you can configure your ethernet settings. You can
+choose type=fix or type=dhcp. If you choose fix, enter the desired
+local ip, netmask, gateway, dns and broadcast addresses. If you choose
+dhcp, these settings will be ignored and the scripts will try to get 
+a dhcp lease.
+
+
+Wireless:
+
+For the hotspot there are a lot of things you can configure. Everything
+related to the operation of the network, such as which driver to use,
+the desired SSID, passphrase and so on, can be found in hotspot.conf.
+Provided you use the file as found in the repository, then there is
+a mac-address filter in place. All accepted addresses must be put into
+hotspot.accept. Devices that are not listed there will not be able to
+connect to the hotspot. Also, make sure you change the SSID and the
+passphrase before you use those files!
+
+To simplify connecting devices to the accesspoint, a DHCP server is
+configured to run concurrently. You can change its settings in
+dhcpd.conf. DO NOT change anything except the range there, otherwise
+the rest will no longer work! DNS and so on will be automatically 
+changed based on the other configuration files or the dhcp lease.
+
+
+Routing
+
+ONLY CHANGE THINGS HERE IF YOU ABSLOUTELY KNOW WHAT YOU ARE DOING!
+
+Routing is done by using iptables. A few simple rules allow full
+communication through your computer from eth0 to wlan0 and back.
+If you want, you can change the rules in routing.sh, to achieve
+a firewall or whatever you desire.

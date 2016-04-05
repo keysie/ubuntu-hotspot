@@ -84,7 +84,7 @@ fi
 # Program start
 
 echo
-echo "======== EPICWAVE-AP SETUP ========="
+echo "======== ACCESSPOINT SETUP ========="
 echo
 echo -n "Stopping network manager... "
 result="$(stop network-manager 2>&1 1>/dev/null)"
@@ -166,4 +166,4 @@ echo "Starting Accesspoint..."
 
 trap int_trap EXIT # This catches Ctrl+C and executes above method
 
-hostapd ${DIR}/EpicWave.conf
+hostapd ${DIR}/hotspot.conf
